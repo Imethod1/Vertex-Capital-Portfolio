@@ -17,7 +17,7 @@ export const AllocationSnapshot: React.FC<AllocationSnapshotProps> = ({ allocati
       updated[index][field] = numValue;
       updated[index].deviation = numValue - (field === 'target' ? updated[index].target : updated[index].current);
     } else {
-      updated[index][field] = value as any;
+      (updated[index][field] as any) = value;
     }
     onUpdate(updated);
   };
