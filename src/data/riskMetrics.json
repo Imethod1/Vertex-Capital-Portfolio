@@ -1,0 +1,25 @@
+{
+  "metrics": [
+    {
+      "metricName": "Single Security Exposure",
+      "ipsLimit": "≤10%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Single Sector Exposure",
+      "ipsLimit": "≤25%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "International Equity Exposure",
+      "ipsLimit": "≤15%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    }
+  ]
+}

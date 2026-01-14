@@ -1,0 +1,76 @@
+backend:
+  name: github
+  repo: https://github.com/Imethod1/Vertex-Capital-Portfolio.git
+  base_url: https://YOUR_NETLIFY_SITE.netlify.app
+  auth_endpoint: auth
+  
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: "portfolio"
+    label: "Portfolio Data"
+    folder: "src/data"
+    format: "json"
+    slug: "{{slug}}"
+    create: true
+    delete: true
+    fields:
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Portfolio Allocations", name: "allocations", widget: "list", collapsed: true,
+          fields:
+            - { label: "Asset Class", name: "assetClass", widget: "select", options: ["Fixed Income", "Domestic Equities", "Regional (EAC/SADC) Equities", "Cash & Cash Equivalents"] }
+            - { label: "Target %", name: "targetPercent", widget: "number", min: 0, max: 100, step: 0.1 }
+            - { label: "Current %", name: "currentPercent", widget: "number", min: 0, max: 100, step: 0.1 }
+            - { label: "Deviation %", name: "deviationPercent", widget: "number", step: 0.1 }
+            - { label: "Rebalancing Required", name: "rebalancingRequired", widget: "boolean", default: false }
+            - { label: "Notes", name: "notes", widget: "text" }
+        }
+      - label: "Securities"
+        name: "securities"
+        widget: "list"
+        collapsed: true
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Ticker", name: "ticker", widget: "string" }
+          - { label: "Asset Class", name: "assetClass", widget: "select", options: ["Fixed Income", "Domestic Equities", "Regional (EAC/SADC) Equities", "Cash & Cash Equivalents"] }
+          - { label: "Current Weight %", name: "currentWeight", widget: "number", min: 0, max: 100, step: 0.1 }
+          - { label: "Target Weight %", name: "targetWeight", widget: "number", min: 0, max: 100, step: 0.1 }
+          - { label: "Deviation %", name: "deviation", widget: "number", step: 0.1 }
+          - { label: "Sector", name: "sector", widget: "select", options: ["Banking", "Telecommunications", "Consumer Goods", "Government", "Technology", "Energy", "Other"] }
+          - { label: "Geographic Exposure", name: "geographicExposure", widget: "select", options: ["Tanzania", "Kenya", "Uganda", "South Africa", "Regional"] }
+          - { label: "Market Value (TZS)", name: "marketValue", widget: "number" }
+          - { label: "Quantity", name: "quantity", widget: "number" }
+          - { label: "Purchase Price", name: "purchasePrice", widget: "number" }
+          - { label: "Current Price", name: "currentPrice", widget: "number" }
+          - { label: "IPS Compliant", name: "ipsCompliant", widget: "boolean" }
+          - { label: "Notes", name: "notes", widget: "text" }
+
+  - name: "risk_metrics"
+    label: "Risk Metrics"
+    file: "src/data/riskMetrics.json"
+    format: "json"
+    fields:
+      - label: "Risk Metrics"
+        name: "metrics"
+        widget: "list"
+        collapsed: true
+        fields:
+          - { label: "Metric Name", name: "metricName", widget: "string" }
+          - { label: "IPS Limit", name: "ipsLimit", widget: "string" }
+          - { label: "Current Value", name: "currentValue", widget: "string" }
+          - { label: "Status", name: "status", widget: "select", options: ["Compliant", "Warning", "Breach"] }
+          - { label: "Action Required", name: "actionRequired", widget: "text" }
+
+  - name: "settings"
+    label: "Portfolio Settings"
+    file: "src/data/settings.json"
+    format: "json"
+    fields:
+      - { label: "Portfolio Name", name: "portfolioName", widget: "string" }
+      - { label: "Portfolio Manager", name: "portfolioManager", widget: "string" }
+      - { label: "Last Updated", name: "lastUpdated", widget: "datetime", format: "YYYY-MM-DD HH:mm" }
+      - { label: "Total Portfolio Value (TZS)", name: "totalValue", widget: "number" }
+      - { label: "Benchmark Index", name: "benchmark", widget: "string" }
+      - { label: "YTD Performance %", name: "ytdPerformance", widget: "number", step: 0.01 }

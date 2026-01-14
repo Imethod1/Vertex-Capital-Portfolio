@@ -1,0 +1,187 @@
+{
+  "date": "2026-01-12",
+  "allocations": [
+    {
+      "assetClass": "Fixed Income",
+      "targetPercent": 50,
+      "currentPercent": 0,
+      "deviationPercent": 0,
+      "rebalancingRequired": false,
+      "notes": "Government and investment-grade corporate bonds"
+    },
+    {
+      "assetClass": "Domestic Equities",
+      "targetPercent": 35,
+      "currentPercent": 0,
+      "deviationPercent": 0,
+      "rebalancingRequired": false,
+      "notes": "DSE-listed equities"
+    },
+    {
+      "assetClass": "Regional (EAC/SADC) Equities",
+      "targetPercent": 5,
+      "currentPercent": 0,
+      "deviationPercent": 0,
+      "rebalancingRequired": false,
+      "notes": "Large-cap liquid issuers"
+    },
+    {
+      "assetClass": "Cash & Cash Equivalents",
+      "targetPercent": 10,
+      "currentPercent": 0,
+      "deviationPercent": 0,
+      "rebalancingRequired": false,
+      "notes": "Treasury bills and bank deposits"
+    }
+  ],
+  "securities": [],
+  "riskMetrics": [
+    {
+      "metricName": "Single Security Exposure",
+      "ipsLimit": "≤10%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Single Sector Exposure",
+      "ipsLimit": "≤25%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Regional Allocation",
+      "ipsLimit": "≤10%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Weighted Portfolio Duration",
+      "ipsLimit": "≤2 yrs",
+      "currentValue": "0 yrs",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Portfolio Volatility",
+      "ipsLimit": "5-7% ann.",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Drawdown Limit",
+      "ipsLimit": "≤5%",
+      "currentValue": "0%",
+      "status": "Compliant",
+      "actionRequired": ""
+    },
+    {
+      "metricName": "Credit Rating Compliance",
+      "ipsLimit": "≥Investment Grade",
+      "currentValue": "N/A",
+      "status": "Compliant",
+      "actionRequired": ""
+    }
+  ],
+  "liquidityItems": [
+    {
+      "item": "Cash & Cash Equivalents",
+      "minimumMaximum": "10-15%",
+      "currentPercent": 0,
+      "status": "Pending",
+      "actionNeeded": "Monitor weekly"
+    },
+    {
+      "item": "Time to Liquidate 80% Portfolio",
+      "minimumMaximum": "≤30 days",
+      "currentPercent": 0,
+      "status": "N/A",
+      "actionNeeded": "Monitor liquidity conditions"
+    },
+    {
+      "item": "Bid-Ask Spread / Daily Volume",
+      "minimumMaximum": "Adequate for execution",
+      "currentPercent": 0,
+      "status": "Pending",
+      "actionNeeded": "Monitor execution efficiency"
+    }
+  ],
+  "tacticalAdjustments": [],
+  "performanceMetrics": [
+    {
+      "metricName": "Total Portfolio Return",
+      "targetBenchmark": "2-3% (Q1 target)",
+      "currentValue": "0%",
+      "deviation": "0%",
+      "notes": "Target annualized return: 8-12%"
+    },
+    {
+      "metricName": "Asset Class Returns",
+      "targetBenchmark": "Per allocation",
+      "currentValue": "0%",
+      "deviation": "0%",
+      "notes": "Monitor each asset class separately"
+    },
+    {
+      "metricName": "Benchmark-relative Return",
+      "targetBenchmark": "Composite Index",
+      "currentValue": "0%",
+      "deviation": "0%",
+      "notes": "35% DSE + 5% Regional + 50% Gov Bonds + 10% T-bill"
+    },
+    {
+      "metricName": "Risk-adjusted Metrics",
+      "targetBenchmark": "Sharpe & Sortino Ratio",
+      "currentValue": "0",
+      "deviation": "0",
+      "notes": "Calculate monthly"
+    }
+  ],
+  "complianceChecks": [
+    {
+      "complianceArea": "Single Security Limit",
+      "ipsLimitRule": "≤10%",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    },
+    {
+      "complianceArea": "Single Sector Limit",
+      "ipsLimitRule": "≤25%",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    },
+    {
+      "complianceArea": "Regional Allocation Limit",
+      "ipsLimitRule": "≤10%",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    },
+    {
+      "complianceArea": "Drawdown Limit",
+      "ipsLimitRule": "≤5%",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    },
+    {
+      "complianceArea": "Prohibited Instruments",
+      "ipsLimitRule": "None",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    },
+    {
+      "complianceArea": "Credit Rating Compliance",
+      "ipsLimitRule": "≥Investment Grade",
+      "currentStatus": "Compliant",
+      "breach": "No",
+      "actionRequired": ""
+    }
+  ]
+}
