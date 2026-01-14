@@ -1,0 +1,2 @@
+/auth    https://vertex-capital-portifolio.netlify.app/.netlify/functions/auth    200
+/admin/* /admin/index.html 200
