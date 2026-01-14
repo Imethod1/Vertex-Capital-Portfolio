@@ -2,14 +2,52 @@
   command = "npm run build"
   publish = "dist"
 
-# Ensure Decap CMS admin loads its own index, not SPA fallback
+# Admin panel - must come before catch-all
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
 
-# SPA fallback for React Router
+# Exclude static files and external resources from SPA fallback
+[[redirects]]
+  from = "/*.js"
+  to = "/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*.css"
+  to = "/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*.json"
+  to = "/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/images/*"
+  to = "/:splat"
+  status = 200
+
+# SPA fallback for React Router (must be last)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Add headers for proper MIME types
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Content-Type = "text/css"
