@@ -137,56 +137,62 @@ collections:
 
   - name: risk_metrics
     label: Risk Metrics
-    file: src/data/riskMetrics.json
-    format: json
-    fields:
-      - label: Risk Metrics
-        name: metrics
-        widget: list
-        collapsed: true
+    files:
+      - file: src/data/riskMetrics.json
+        label: Risk Metrics
+        name: risk_metrics
+        format: json
         fields:
-          - label: Metric Name
-            name: metricName
-            widget: string
-          - label: IPS Limit
-            name: ipsLimit
-            widget: string
-          - label: Current Value
-            name: currentValue
-            widget: string
-          - label: Status
-            name: status
-            widget: select
-            options:
-              - Compliant
-              - Warning
-              - Breach
-          - label: Action Required
-            name: actionRequired
-            widget: text
+          - label: Risk Metrics
+            name: metrics
+            widget: list
+            collapsed: true
+            fields:
+              - label: Metric Name
+                name: metricName
+                widget: string
+              - label: IPS Limit
+                name: ipsLimit
+                widget: string
+              - label: Current Value
+                name: currentValue
+                widget: string
+              - label: Status
+                name: status
+                widget: select
+                options:
+                  - Compliant
+                  - Warning
+                  - Breach
+              - label: Action Required
+                name: actionRequired
+                widget: text
 
   - name: settings
     label: Portfolio Settings
-    file: src/data/settings.json
-    format: json
-    fields:
-      - label: Portfolio Name
-        name: portfolioName
-        widget: string
-      - label: Portfolio Manager
-        name: portfolioManager
-        widget: string
-      - label: Last Updated
-        name: lastUpdated
-        widget: datetime
-        format: "YYYY-MM-DD HH:mm"
-      - label: Total Portfolio Value (TZS)
-        name: totalValue
-        widget: number
-      - label: Benchmark Index
-        name: benchmark
-        widget: string
-      - label: YTD Performance %
-        name: ytdPerformance
-        widget: number
-        step: 0.01
+    files:
+      - file: src/data/settings.json
+        label: Settings
+        name: settings
+        format: json
+        fields:
+          - label: Portfolio Name
+            name: portfolioName
+            widget: string
+          - label: Portfolio Manager
+            name: portfolioManager
+            widget: string
+          - label: Last Updated
+            name: lastUpdated
+            widget: datetime
+            format: "YYYY-MM-DD HH:mm"
+          - label: Total Portfolio Value (TZS)
+            name: totalValue
+            widget: number
+          - label: Benchmark Index
+            name: benchmark
+            widget: string
+          - label: YTD Performance %
+            name: ytdPerformance
+            widget: number
+            step: 0.01
