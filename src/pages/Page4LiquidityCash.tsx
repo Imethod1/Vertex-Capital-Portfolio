@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
-import Table from '../components/Table';
 import { LiquidityItem } from '../types/portfolio';
 
 const Page4LiquidityCash: React.FC = () => {
@@ -27,71 +26,15 @@ const Page4LiquidityCash: React.FC = () => {
     },
   ]);
 
-  const handleLiquidityChange = (id: string, key: string, value: any) => {
-    setLiquidityItems((prev) =>
-      prev.map((item, idx) => {
-        if (String(idx) === id) {
-          const updated = { ...item, [key]: value };
-
-          // Auto-update status based on values
-          if (key === 'current') {
-            if (item.item === 'Cash & Cash Equivalents') {
-              if (updated.current >= 10 && updated.current <= 15) {
-                updated.status = 'Adequate';
-                updated.actionNeeded = 'None - Within range';
-              } else if (updated.current < 10) {
-                updated.status = 'Critical';
-                updated.actionNeeded = 'Raise cash immediately - Below 10% minimum';
-              } else if (updated.current > 15) {
-                updated.status = 'Warning';
-                updated.actionNeeded = 'Excess cash - Consider deploying';
-              }
-            } else if (item.item === 'Time to Liquidate 80% Portfolio') {
-              if (updated.current <= 30) {
-                updated.status = 'Adequate';
-                updated.actionNeeded = 'None - Within 30 days';
-              } else {
-                updated.status = 'Warning';
-                updated.actionNeeded = 'Liquidity concern - Portfolio too concentrated';
-              }
-            }
-          }
-
-          return updated;
-        }
-        return item;
-      })
-    );
-  };
-
   const criticalItems = liquidityItems.filter((i) => i.status === 'Critical');
   const warningItems = liquidityItems.filter((i) => i.status === 'Warning');
-
-  const columns = [
-    { key: 'item', label: 'Item', type: 'text' as const },
-    { key: 'minimum', label: 'Min %', type: 'number' as const },
-    { key: 'maximum', label: 'Max %', type: 'number' as const },
-    { key: 'current', label: 'Current %', type: 'number' as const, editable: true },
-    { key: 'status', label: 'Status', type: 'status' as const },
-    { key: 'actionNeeded', label: 'Action Needed', type: 'text' as const, editable: true },
-  ];
-
-  const rows = liquidityItems.map((item, idx) => ({
-    id: String(idx),
-    item: item.item,
-    minimum: item.minimum || '-',
-    maximum: item.maximum || '-',
-    current: item.current,
-    status: item.status.toLowerCase(),
-    actionNeeded: item.actionNeeded,
-  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation
         pageNumber={4}
         pageTitle="Liquidity & Cash Management"
-        pageDescription="Ensure sufficient cash for operations and manage liquidity risks"
+        pageDescription="Ensure sufficient cash for operations and manage liquidity risks (read-only, managed via Decap CMS)"
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -168,16 +111,41 @@ const Page4LiquidityCash: React.FC = () => {
           </div>
         )}
 
-        {/* Table */}
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowChange={handleLiquidityChange}
-          addable={false}
-          deletable={false}
-          sortable={true}
-          className="mb-8"
-        />
+        {/* Read-Only Liquidity Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Item</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Min %</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Max %</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Current %</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action Needed</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {liquidityItems.map((item, idx) => (
+                <tr key={idx} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.item}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{item.minimum || '-'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{item.maximum || '-'}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-blue-600">{item.current}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      item.status === 'Adequate' ? 'bg-green-200 text-green-800' :
+                      item.status === 'Warning' ? 'bg-yellow-200 text-yellow-800' :
+                      'bg-red-200 text-red-800'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">{item.actionNeeded}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Liquidity Policy */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -193,13 +161,13 @@ const Page4LiquidityCash: React.FC = () => {
           </div>
 
           <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h3 className="font-semibold text-green-900 mb-3">📋 Liquidity Monitoring</h3>
+            <h3 className="font-semibold text-green-900 mb-3">📋 How to Update Liquidity Data</h3>
             <ul className="text-sm text-green-800 space-y-2">
-              <li>• Monitor daily cash balances</li>
-              <li>• Track execution spreads for all assets</li>
-              <li>• Measure time to liquidate 80% portfolio</li>
-              <li>• Document all cash flow projections</li>
-              <li>• Escalate critical issues immediately</li>
+              <li>• Go to <strong>https://vertex-capital-portifolio.netlify.app/admin</strong></li>
+              <li>• Login with your GitHub credentials</li>
+              <li>• Click "Liquidity" and update cash positions</li>
+              <li>• Changes will auto-rebuild within 1-2 minutes</li>
+              <li>• System escalates critical issues automatically</li>
             </ul>
           </div>
         </div>

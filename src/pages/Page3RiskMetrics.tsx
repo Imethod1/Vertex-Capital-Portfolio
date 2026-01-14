@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import Navigation from '../components/Navigation';
-import Table from '../components/Table';
 import { RiskMetric } from '../types/portfolio';
 
 const Page3RiskMetrics: React.FC = () => {
@@ -56,37 +55,9 @@ const Page3RiskMetrics: React.FC = () => {
     },
   ]);
 
-  const handleMetricChange = (id: string, key: string, value: any) => {
-    setRiskMetrics((prev) =>
-      prev.map((metric, idx) => {
-        if (String(idx) === id) {
-          return { ...metric, [key]: value };
-        }
-        return metric;
-      })
-    );
-  };
-
   const breachCount = useMemo(() => riskMetrics.filter((m) => m.status === 'Breach').length, [riskMetrics]);
   const warningCount = useMemo(() => riskMetrics.filter((m) => m.status === 'Warning').length, [riskMetrics]);
   const compliantCount = useMemo(() => riskMetrics.filter((m) => m.status === 'Compliant').length, [riskMetrics]);
-
-  const columns = [
-    { key: 'metric', label: 'Metric', type: 'text' as const },
-    { key: 'ipsLimit', label: 'IPS Limit', type: 'text' as const },
-    { key: 'currentValue', label: 'Current Value', type: 'text' as const, editable: true },
-    { key: 'status', label: 'Status', type: 'status' as const },
-    { key: 'actionRequired', label: 'Action Required', type: 'text' as const, editable: true },
-  ];
-
-  const rows = riskMetrics.map((metric, idx) => ({
-    id: String(idx),
-    metric: metric.metric,
-    ipsLimit: metric.ipsLimit,
-    currentValue: metric.currentValue,
-    status: metric.status.toLowerCase(),
-    actionRequired: metric.actionRequired,
-  }));
 
   const statusColors: { [key: string]: string } = {
     Compliant: 'bg-green-100 border-l-4 border-green-500',
@@ -99,7 +70,7 @@ const Page3RiskMetrics: React.FC = () => {
       <Navigation
         pageNumber={3}
         pageTitle="Risk & Concentration Metrics"
-        pageDescription="Monitor overall portfolio risk exposure and IPS compliance with thresholds"
+        pageDescription="Monitor overall portfolio risk exposure and IPS compliance with thresholds (read-only, managed via Decap CMS)"
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -117,10 +88,9 @@ const Page3RiskMetrics: React.FC = () => {
             <h3 className="text-sm font-semibold text-gray-600 mb-2">Breaches</h3>
             <p className="text-3xl font-bold text-red-600">{breachCount}</p>
           </div>
-          <div className={`rounded-lg p-6 border-2 ${breachCount === 0 ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-            <h3 className={`text-sm font-semibold ${breachCount === 0 ? 'text-green-700' : 'text-red-700'}`}>
-              {breachCount === 0 ? '✓ All Compliant' : '✕ Action Required'}
-            </h3>
+          <div className="rounded-lg p-6 border-2 bg-blue-50 border-blue-200">
+            <h3 className="text-sm font-semibold text-blue-700 mb-2">ℹ️ Read-Only</h3>
+            <p className="text-xs text-gray-600">Edit via Decap CMS</p>
           </div>
         </div>
 
@@ -158,16 +128,39 @@ const Page3RiskMetrics: React.FC = () => {
           </div>
         )}
 
-        {/* Table */}
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowChange={handleMetricChange}
-          addable={false}
-          deletable={false}
-          sortable={true}
-          className="mb-8"
-        />
+        {/* Read-Only Risk Metrics Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Metric</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">IPS Limit</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Current Value</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action Required</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {riskMetrics.map((metric, idx) => (
+                <tr key={idx} className={`${statusColors[metric.status]} hover:opacity-75`}>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{metric.metric}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{metric.ipsLimit}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900 font-semibold">{metric.currentValue}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      metric.status === 'Compliant' ? 'bg-green-200 text-green-800' :
+                      metric.status === 'Warning' ? 'bg-yellow-200 text-yellow-800' :
+                      'bg-red-200 text-red-800'
+                    }`}>
+                      {metric.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">{metric.actionRequired}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Traffic Light Legend */}
         <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
@@ -190,13 +183,13 @@ const Page3RiskMetrics: React.FC = () => {
 
         {/* Monitoring Instructions */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-semibold text-blue-900 mb-3">📋 Monitoring Instructions</h3>
+          <h3 className="font-semibold text-blue-900 mb-3">📋 How to Update Risk Metrics</h3>
           <ul className="text-sm text-blue-800 space-y-2">
-            <li>• Update metrics monthly or immediately after significant portfolio changes</li>
-            <li>• System automatically flags breaches and recommendations for action</li>
-            <li>• Investigate any warning status with 3 business days</li>
-            <li>• Breaches require immediate escalation to Investment Committee</li>
-            <li>• Document all corrective actions taken</li>
+            <li>• Go to <strong>https://vertex-capital-portifolio.netlify.app/admin</strong></li>
+            <li>• Login with your GitHub credentials</li>
+            <li>• Click "Risk Metrics" and update values</li>
+            <li>• System automatically validates compliance with IPS thresholds</li>
+            <li>• Changes will auto-rebuild and appear here within 1-2 minutes</li>
           </ul>
         </div>
       </div>

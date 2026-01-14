@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
-import Table from '../components/Table';
 import { PerformanceMetric } from '../types/portfolio';
 
 const Page6Performance: React.FC = () => {
@@ -56,37 +55,8 @@ const Page6Performance: React.FC = () => {
     },
   ]);
 
-  const handleMetricChange = (id: string, key: string, value: any) => {
-    setPerformanceMetrics((prev) =>
-      prev.map((metric, idx) => {
-        if (String(idx) === id) {
-          return { ...metric, [key]: value };
-        }
-        return metric;
-      })
-    );
-  };
-
   // Calculate composite benchmark: 35% DSE + 5% Regional + 50% Gov Bonds + 10% T-bill
   const benchmarkReturn = 35 * 0.028 + 5 * 0.035 + 50 * 0.022 + 10 * 0.018;
-
-  const columns = [
-    { key: 'metric', label: 'Metric', type: 'text' as const },
-    { key: 'target', label: 'Target / Benchmark', type: 'text' as const },
-    { key: 'current', label: 'Current Value', type: 'text' as const, editable: true },
-    { key: 'deviation', label: 'Deviation', type: 'text' as const, editable: true },
-    { key: 'notes', label: 'Notes', type: 'text' as const, editable: true },
-  ];
-
-  const rows = performanceMetrics.map((metric, idx) => ({
-    id: String(idx),
-    metric: metric.metric,
-    target: String(metric.target),
-    current: String(metric.current),
-    deviation: String(metric.deviation),
-    notes: metric.notes,
-  }));
-
   const portfolioReturn = 2.4;
   const overperformance = portfolioReturn - benchmarkReturn;
 
@@ -95,7 +65,7 @@ const Page6Performance: React.FC = () => {
       <Navigation
         pageNumber={6}
         pageTitle="Performance Monitoring"
-        pageDescription="Track portfolio returns against benchmarks and IPS targets"
+        pageDescription="Track portfolio returns against benchmarks and IPS targets (read-only, managed via Decap CMS)"
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -118,10 +88,9 @@ const Page6Performance: React.FC = () => {
             </p>
             <p className="text-xs text-gray-600 mt-1">vs Composite Index</p>
           </div>
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <h3 className="text-sm font-semibold text-gray-600 mb-2">Annualized Return</h3>
-            <p className="text-3xl font-bold text-blue-600">~{(portfolioReturn * 4).toFixed(1)}%</p>
-            <p className="text-xs text-gray-600 mt-1">Projected annual</p>
+          <div className="rounded-lg p-6 border-2 bg-blue-50 border-blue-200">
+            <h3 className="text-sm font-semibold text-blue-700 mb-2">ℹ️ Read-Only</h3>
+            <p className="text-xs text-gray-600">Edit via Decap CMS</p>
           </div>
         </div>
 
@@ -154,6 +123,32 @@ const Page6Performance: React.FC = () => {
           </div>
         </div>
 
+        {/* Read-Only Performance Metrics Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Metric</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Target / Benchmark</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Current Value</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Deviation</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {performanceMetrics.map((metric, idx) => (
+                <tr key={idx} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{metric.metric}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{metric.target}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-blue-600">{metric.current}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{metric.deviation}</td>
+                  <td className="px-6 py-4 text-sm text-gray-800">{metric.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {/* Benchmark Information */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
           <h3 className="font-semibold text-blue-900 mb-3">📋 Composite Benchmark Composition</h3>
@@ -180,26 +175,15 @@ const Page6Performance: React.FC = () => {
           </div>
         </div>
 
-        {/* Table */}
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowChange={handleMetricChange}
-          addable={false}
-          deletable={false}
-          sortable={true}
-          className="mb-8"
-        />
-
         {/* Analysis Instructions */}
         <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-          <h3 className="font-semibold text-green-900 mb-3">📈 Performance Analysis</h3>
+          <h3 className="font-semibold text-green-900 mb-3">📈 How to Update Performance Data</h3>
           <ul className="text-sm text-green-800 space-y-2">
-            <li>• Update returns monthly based on official NAV calculations</li>
-            <li>• Compare against quarterly targets and annual benchmarks</li>
-            <li>• Analyze underperforming asset classes for root causes</li>
-            <li>• Document any tactical decisions that impacted performance</li>
-            <li>• Share analysis with Investment Committee monthly</li>
+            <li>• Go to <strong>https://vertex-capital-portifolio.netlify.app/admin</strong></li>
+            <li>• Login with your GitHub credentials</li>
+            <li>• Click "Performance Metrics" and update returns</li>
+            <li>• System automatically calculates outperformance vs benchmarks</li>
+            <li>• Changes will auto-rebuild and appear here within 1-2 minutes</li>
             <li>• Monitor risk-adjusted metrics (Sharpe, Sortino) for portfolio quality</li>
           </ul>
         </div>

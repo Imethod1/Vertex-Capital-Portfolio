@@ -3,28 +3,9 @@ import { Security } from '../types/portfolio';
 
 interface SecurityExposureProps {
   securities: Security[];
-  onAdd?: (security: Security) => void;
-  onUpdate?: (securities: Security[]) => void;
 }
 
-export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities, onUpdate }) => {
-  const handleInputChange = (index: number, field: keyof Security, value: string | number | boolean) => {
-    if (!onUpdate) return;
-    const updated = [...securities];
-    const security = updated[index];
-    
-    if (field === 'currentWeight' || field === 'targetWeight') {
-      const numValue = typeof value === 'string' ? parseFloat(value) || 0 : (typeof value === 'number' ? value : 0);
-      security[field] = numValue;
-      security.deviation = numValue - (field === 'targetWeight' ? security.targetWeight : security.currentWeight);
-    } else if (typeof value === 'string') {
-      (security[field] as any) = value;
-    } else {
-      (security[field] as any) = value;
-    }
-    onUpdate(updated);
-  };
-
+export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities }) => {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
       <div className="mb-6">
@@ -32,7 +13,7 @@ export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities, 
           Individual Security Exposure
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Track positions, IPS compliance, and sector/geography distribution.
+          Track positions, IPS compliance, and sector/geography distribution (read-only).
         </p>
       </div>
 
@@ -83,16 +64,8 @@ export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities, 
                   <td className="border border-gray-300 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">
                     {sec.assetClass}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-700 px-4 py-3">
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.1"
-                      value={sec.currentWeight || ''}
-                      onChange={(e) => handleInputChange(index, 'currentWeight', e.target.value)}
-                      className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    />
+                  <td className="border border-gray-300 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">
+                    {sec.currentWeight}%
                   </td>
                   <td className="border border-gray-300 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300">
                     {sec.targetWeight}%
@@ -115,13 +88,8 @@ export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities, 
                       {sec.ipsCompliant ? '✓ Yes' : '✗ No'}
                     </span>
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-700 px-4 py-3">
-                    <textarea
-                      value={sec.notes}
-                      onChange={(e) => handleInputChange(index, 'notes', e.target.value)}
-                      className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                      rows={1}
-                    />
+                  <td className="border border-gray-300 dark:border-gray-700 px-4 py-3 text-gray-700 dark:text-gray-300 text-sm">
+                    {sec.notes || '—'}
                   </td>
                 </tr>
               ))}
@@ -132,7 +100,7 @@ export const SecurityExposure: React.FC<SecurityExposureProps> = ({ securities, 
 
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded border border-blue-200 dark:border-blue-700">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Instructions:</strong> Add each security; check IPS compliance (single security ≤10%, sector ≤25%).
+          <strong>Data is read-only.</strong> To add or update securities, use the Decap CMS admin panel.
         </p>
       </div>
     </div>

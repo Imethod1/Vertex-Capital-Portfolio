@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
-import Table from '../components/Table';
 import { TacticalAdjustment } from '../types/portfolio';
 
 const Page5TacticalLog: React.FC = () => {
@@ -17,57 +16,6 @@ const Page5TacticalLog: React.FC = () => {
     },
   ]);
 
-  const handleTacticChange = (id: string, key: string, value: any) => {
-    setTactics((prev) =>
-      prev.map((tactic) => {
-        if (tactic.id === id) {
-          return { ...tactic, [key]: value };
-        }
-        return tactic;
-      })
-    );
-  };
-
-  const handleAddTactic = () => {
-    const newId = String(Math.max(...tactics.map((t) => parseInt(t.id)), 0) + 1);
-    const newTactic: TacticalAdjustment = {
-      id: newId,
-      date: new Date().toISOString().split('T')[0],
-      tacticalMove: '',
-      deviationPercent: 0,
-      marketSignal: '',
-      duration: '',
-      approvedBy: '',
-      notes: '',
-    };
-    setTactics([...tactics, newTactic]);
-  };
-
-  const handleDeleteTactic = (id: string) => {
-    setTactics((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  const columns = [
-    { key: 'date', label: 'Date', type: 'date' as const, editable: true },
-    { key: 'tacticalMove', label: 'Tactical Move', type: 'text' as const, editable: true },
-    { key: 'deviationPercent', label: 'Deviation %', type: 'number' as const, editable: true },
-    { key: 'marketSignal', label: 'Market Signal / Rationale', type: 'text' as const, editable: true },
-    { key: 'duration', label: 'Duration', type: 'text' as const, editable: true },
-    { key: 'approvedBy', label: 'Approved By (IC/PM)', type: 'text' as const, editable: true },
-    { key: 'notes', label: 'Notes', type: 'text' as const, editable: true },
-  ];
-
-  const rows = tactics.map((tactic) => ({
-    id: tactic.id,
-    date: tactic.date,
-    tacticalMove: tactic.tacticalMove,
-    deviationPercent: tactic.deviationPercent,
-    marketSignal: tactic.marketSignal,
-    duration: tactic.duration,
-    approvedBy: tactic.approvedBy,
-    notes: tactic.notes,
-  }));
-
   const totalDeviations = tactics.reduce((sum, t) => sum + Math.abs(t.deviationPercent), 0);
 
   return (
@@ -75,7 +23,7 @@ const Page5TacticalLog: React.FC = () => {
       <Navigation
         pageNumber={5}
         pageTitle="Tactical Adjustment Log"
-        pageDescription="Document all short-term deviations from strategic allocation with audit trail"
+        pageDescription="Document all short-term deviations from strategic allocation with audit trail (read-only, managed via Decap CMS)"
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -95,11 +43,9 @@ const Page5TacticalLog: React.FC = () => {
               {tactics.length > 0 ? Math.max(...tactics.map((t) => Math.abs(t.deviationPercent))).toFixed(2) : 0}%
             </p>
           </div>
-          <div className={`rounded-lg p-6 border-2 ${totalDeviations <= 5 ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
-            <h3 className={`text-sm font-semibold ${totalDeviations <= 5 ? 'text-green-700' : 'text-yellow-700'}`}>
-              {totalDeviations <= 5 ? '✓ Within Limit' : '⚠ Approaching Limit'}
-            </h3>
-            <p className="text-xs text-gray-600 mt-1">Max ±5% allowed</p>
+          <div className="rounded-lg p-6 border-2 bg-blue-50 border-blue-200">
+            <h3 className="text-sm font-semibold text-blue-700 mb-2">ℹ️ Read-Only</h3>
+            <p className="text-xs text-gray-600">Edit via Decap CMS</p>
           </div>
         </div>
 
@@ -114,28 +60,48 @@ const Page5TacticalLog: React.FC = () => {
           </div>
         )}
 
-        {/* Tactical Approval Status Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <h3 className="font-semibold text-blue-900 mb-3">📋 Tactical Adjustment Requirements</h3>
-          <ul className="text-sm text-blue-800 space-y-2">
-            <li>• Approval required from Investment Committee (IC) before execution</li>
-            <li>• All adjustments must have documented market rationale</li>
-            <li>• Maximum deviation limit: ±5% from strategic weights</li>
-            <li>• Duration should be specified (e.g., "2 weeks", "1 month")</li>
-            <li>• Tactical moves must revert to strategic allocation upon completion</li>
-            <li>• Full audit trail maintained for all decisions</li>
-          </ul>
+        {/* Read-Only Tactical Log Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tactical Move</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Deviation %</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Market Signal</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Duration</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Approved By</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {tactics.map((tactic) => (
+                <tr key={tactic.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-900">{tactic.date}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{tactic.tacticalMove}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-blue-600">{tactic.deviationPercent}%</td>
+                  <td className="px-6 py-4 text-sm text-gray-700">{tactic.marketSignal}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{tactic.duration}</td>
+                  <td className="px-6 py-4 text-sm"><span className="px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">{tactic.approvedBy}</span></td>
+                  <td className="px-6 py-4 text-sm text-gray-700">{tactic.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Table */}
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowChange={handleTacticChange}
-          onAddRow={handleAddTactic}
-          onDeleteRow={handleDeleteTactic}
-          className="mb-8"
-        />
+        {/* Tactical Approval Status Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <h3 className="font-semibold text-blue-900 mb-3">📋 How to Log Tactical Adjustments</h3>
+          <ul className="text-sm text-blue-800 space-y-2">
+            <li>• Go to <strong>https://vertex-capital-portifolio.netlify.app/admin</strong></li>
+            <li>• Login with your GitHub credentials</li>
+            <li>• Click "Tactical Log" and add new adjustments</li>
+            <li>• Include market rationale, duration, and approver (IC/PM)</li>
+            <li>• Changes will auto-rebuild and appear here within 1-2 minutes</li>
+            <li>• System maintains audit trail for all decisions</li>
+          </ul>
+        </div>
 
         {/* Decision Workflow Info */}
         <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">

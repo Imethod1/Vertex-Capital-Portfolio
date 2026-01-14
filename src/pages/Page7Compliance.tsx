@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
-import Table from '../components/Table';
 import { ComplianceCheck } from '../types/portfolio';
 
 const Page7Compliance: React.FC = () => {
-  const [complianceChecks, setComplianceChecks] = useState<ComplianceCheck[]>([
+  const [complianceChecks] = useState<ComplianceCheck[]>([
     {
       area: 'Single Security Limit',
       ipsLimit: '≤10%',
@@ -49,48 +48,15 @@ const Page7Compliance: React.FC = () => {
     },
   ]);
 
-  const handleComplianceChange = (id: string, key: string, value: any) => {
-    setComplianceChecks((prev) =>
-      prev.map((check, idx) => {
-        if (String(idx) === id) {
-          return { ...check, [key]: value };
-        }
-        return check;
-      })
-    );
-  };
-
   const breachCount = complianceChecks.filter((c) => c.breach).length;
   const compliantCount = complianceChecks.filter((c) => !c.breach).length;
-
-  const columns = [
-    { key: 'area', label: 'Compliance Area', type: 'text' as const },
-    { key: 'ipsLimit', label: 'IPS Limit / Rule', type: 'text' as const },
-    { key: 'currentStatus', label: 'Current Status', type: 'text' as const, editable: true },
-    {
-      key: 'breach',
-      label: 'Breach?',
-      type: 'text' as const,
-      editable: true,
-    },
-    { key: 'actionRequired', label: 'Action Required', type: 'text' as const, editable: true },
-  ];
-
-  const rows = complianceChecks.map((check, idx) => ({
-    id: String(idx),
-    area: check.area,
-    ipsLimit: check.ipsLimit,
-    currentStatus: check.currentStatus,
-    breach: check.breach ? 'Yes' : 'No',
-    actionRequired: check.actionRequired,
-  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation
         pageNumber={7}
         pageTitle="Compliance & IPS Adherence"
-        pageDescription="Confirm ongoing compliance with all IPS limits, rules, and restrictions"
+        pageDescription="Confirm ongoing compliance with all IPS limits, rules, and restrictions (read-only, managed via Decap CMS)"
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -104,11 +70,9 @@ const Page7Compliance: React.FC = () => {
             <h3 className="text-sm font-semibold text-gray-600 mb-2">Breaches</h3>
             <p className="text-3xl font-bold text-red-600">{breachCount}</p>
           </div>
-          <div className={`rounded-lg p-6 border-2 ${breachCount === 0 ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-            <h3 className={`text-sm font-semibold ${breachCount === 0 ? 'text-green-700' : 'text-red-700'}`}>
-              {breachCount === 0 ? '✓ COMPLIANT' : '✕ NON-COMPLIANT'}
-            </h3>
-            <p className="text-xs text-gray-600 mt-1">Certification Status</p>
+          <div className="rounded-lg p-6 border-2 bg-blue-50 border-blue-200">
+            <h3 className="text-sm font-semibold text-blue-700 mb-2">ℹ️ Read-Only</h3>
+            <p className="text-xs text-gray-600">Edit via Decap CMS</p>
           </div>
         </div>
 
@@ -164,16 +128,51 @@ const Page7Compliance: React.FC = () => {
           </div>
         )}
 
-        {/* Table */}
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowChange={handleComplianceChange}
-          addable={false}
-          deletable={false}
-          sortable={true}
-          className="mb-8"
-        />
+        {/* Read-Only Compliance Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mb-8">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Compliance Area</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">IPS Limit / Rule</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Current Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Breach?</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Action Required</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {complianceChecks.map((check, idx) => (
+                <tr key={idx} className={`${check.breach ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50'}`}>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{check.area}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{check.ipsLimit}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{check.currentStatus}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      check.breach ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
+                    }`}>
+                      {check.breach ? 'Yes' : 'No'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">{check.actionRequired}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* How to Update Instructions */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <h3 className="font-semibold text-blue-900 mb-3">📋 How to Update Compliance Data</h3>
+          <ul className="text-sm text-blue-800 space-y-2">
+            <li>• Go to <strong>https://vertex-capital-portifolio.netlify.app/admin</strong></li>
+            <li>• Login with your GitHub credentials</li>
+            <li>• Click "Compliance Data" and update areas/breach status</li>
+            <li>• System automatically validates against IPS limits</li>
+            <li>• Changes will auto-rebuild and appear here within 1-2 minutes</li>
+          </ul>
+        </div>
+
+        {/* Original table code removed - now read-only */}
 
         {/* IPS Summary */}
         <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6 mb-8">
