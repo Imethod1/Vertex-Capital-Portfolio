@@ -41,8 +41,12 @@ const Page1AllocationSnapshot: React.FC = () => {
   ]);
 
   useEffect(() => {
-    // Load data from JSON file managed by Decap
-    loadPortfolioData();
+    // Load data from JSON file managed by Decap CMS
+    loadPortfolioData().then((data) => {
+      if (data.allocations && data.allocations.length > 0) {
+        setAllocations(data.allocations);
+      }
+    });
   }, []);
 
   return (

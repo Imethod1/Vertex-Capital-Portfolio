@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import SecurityExposure from '../components/SecurityExposure';
 import { Security, Sector, GeographicExposure, AssetClass } from '../types/portfolio';
-import { checkSecurityCompliance, calculateTotalWeight } from '../utils/loadPortfolio';
+import { checkSecurityCompliance, calculateTotalWeight, loadPortfolioData } from '../utils/loadPortfolio';
 
 const Page2SecurityExposure: React.FC = () => {
   const [securities, setSecurities] = useState<Security[]>([
@@ -26,6 +26,16 @@ const Page2SecurityExposure: React.FC = () => {
   ]);
 
   const [complianceData, setComplianceData] = useState(() => checkSecurityCompliance(securities));
+
+  useEffect(() => {
+    // Load securities data from JSON file managed by Decap CMS
+    loadPortfolioData().then((data) => {
+      if (data.securities && data.securities.length > 0) {
+        setSecurities(data.securities);
+        setComplianceData(checkSecurityCompliance(data.securities));
+      }
+    });
+  }, []);
 
   const totalWeight = calculateTotalWeight(securities);
 

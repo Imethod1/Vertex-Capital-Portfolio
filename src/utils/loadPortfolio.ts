@@ -1,12 +1,66 @@
 import { PortfolioState, AllocationSnapshot, Security } from '../types/portfolio';
+import portfolioData from '../data/portfolio.json';
 
 const STORAGE_KEY = 'vertex_portfolio_state';
 
 /**
- * Load portfolio data from localStorage or return default structure
+ * Load portfolio data from imported JSON file (managed by Decap CMS)
+ * Falls back to localStorage, then returns default structure
  */
 export const loadPortfolioData = async (): Promise<PortfolioState> => {
   try {
+    // First try to use the imported JSON data (managed by Decap CMS)
+    if (portfolioData && portfolioData.date) {
+      const allocations = (portfolioData.allocations || []).map((alloc: any) => ({
+        assetClass: alloc.assetClass || '',
+        target: alloc.targetPercent || 0,
+        current: alloc.currentPercent || 0,
+        deviation: alloc.deviationPercent || 0,
+        rebalancingRequired: alloc.rebalancingRequired || false,
+        notes: alloc.notes || '',
+      }));
+
+      const securities = (portfolioData.securities || []).map((sec: any) => ({
+        id: sec.id || '',
+        name: sec.name || '',
+        ticker: sec.ticker || '',
+        assetClass: sec.assetClass || '',
+        currentWeight: sec.currentWeight || 0,
+        targetWeight: sec.targetWeight || 0,
+        deviation: sec.deviation || 0,
+        sector: sec.sector || '',
+        geographicExposure: sec.geographicExposure || '',
+        marketValue: sec.marketValue || 0,
+        quantity: sec.quantity || 0,
+        purchasePrice: sec.purchasePrice || 0,
+        currentPrice: sec.currentPrice || 0,
+        ipsCompliant: sec.ipsCompliant || false,
+        notes: sec.notes || '',
+      }));
+
+      return {
+        date: portfolioData.date,
+        allocations,
+        securities,
+        riskMetrics: (portfolioData.riskMetrics || []).map((m: any) => ({
+        metric: m.metricName || m.metric || '',
+        ipsLimit: m.ipsLimit || '',
+        currentValue: m.currentValue || '',
+        status: m.status || 'Compliant',
+        actionRequired: m.actionRequired || '',
+      })),
+        liquidityItems: [],
+        tacticalAdjustments: [],
+        performanceMetrics: [],
+        complianceChecks: [],
+      };
+    }
+  } catch (error) {
+    console.warn('Failed to load portfolio from JSON file:', error);
+  }
+
+  try {
+    // Fall back to localStorage
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       return JSON.parse(stored);
